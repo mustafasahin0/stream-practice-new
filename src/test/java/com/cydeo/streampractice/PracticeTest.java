@@ -236,7 +236,7 @@ public class PracticeTest {
     @Test
     public void shouldGetMaxSalaryEmployeeJob() throws Exception {
         Job job = Practice.getMaxSalaryEmployeeJob();
-        Assert.assertEquals("President", job.getJobTitle());
+         Assert.assertEquals("President", job.getJobTitle());
         Assert.assertEquals("AD_PRES", job.getId());
     }
 
