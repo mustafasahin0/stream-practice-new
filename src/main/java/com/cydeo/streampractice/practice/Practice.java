@@ -113,7 +113,7 @@ public class Practice {
     // Display the region of the IT department
     public static Region getRegionOfITDepartment() throws Exception {
         //TODO Implement the method
-        return departmentService.readAll().stream().filter(each -> each.getDepartmentName().equals("IT")).map(each -> each.getLocation().getCountry().getRegion()).findFirst().get();
+        return departmentService.readAll().stream().filter(each -> each.getDepartmentName().equals("IT")).findFirst().get().getLocation().getCountry().getRegion();
     }
 
     // Display all the departments where the region of department is 'Europe'
@@ -155,29 +155,23 @@ public class Practice {
     }
 
     // Display the maximum salary an employee gets
-    public static Long getMaxSalary() throws Exception {
-        return employeeService.readAll().stream()
+    public static Long getMaxSalary()  {
+        return getAllEmployees().stream()
                 .map(Employee::getSalary)
                 .max(Comparator.comparing(Long::longValue)).get();
     }
 
     // Display the employee(s) who gets the maximum salary
-    public static List<Employee> getMaxSalaryEmployee() throws Exception {
+    public static List<Employee> getMaxSalaryEmployee() {
         //TODO Implement the method
-        Long value = getMaxSalary();
-        return employeeService.readAll().stream().filter(each -> each.getSalary().equals(value)).collect(Collectors.toList());
+        return employeeService.readAll().stream().filter(each -> each.getSalary().equals(getMaxSalary())).collect(Collectors.toList());
     }
 
     // Display the max salary employee's job
-    public static Job getMaxSalaryEmployeeJob() throws Exception {
+    public static Job getMaxSalaryEmployeeJob() {
         //TODO Implement the method
-        return employeeService.readAll().stream().filter(each -> {
-            try {
-                return each.getSalary().equals(getMaxSalary());
-            } catch (Exception e) {
-                throw new RuntimeException(e);
-            }
-        }).findAny().get().getJob();
+        return getMaxSalaryEmployee().get(0).getJob();
+
     }
 
     // Display the max salary in Americas Region
@@ -189,7 +183,7 @@ public class Practice {
     // Display the second maximum salary an employee gets
     public static Long getSecondMaxSalary() {
         //TODO Implement the method
-        return employeeService.readAll().stream().sorted(Comparator.comparing(Employee::getSalary).reversed()).collect(Collectors.toList()).get(1).getSalary();
+        return getAllEmployees().stream().sorted(Comparator.comparing(Employee::getSalary).reversed()).distinct().collect(Collectors.toList()).get(1).getSalary();
     }
 
     // Display the employee(s) who gets the second maximum salary
@@ -213,7 +207,7 @@ public class Practice {
     // Display the second minimum salary an employee gets
     public static Long getSecondMinSalary() {
         //TODO Implement the method
-        return employeeService.readAll().stream().sorted(Comparator.comparing(Employee::getSalary)).collect(Collectors.toList()).get(1).getSalary();
+        return employeeService.readAll().stream().distinct().sorted(Comparator.comparing(Employee::getSalary)).collect(Collectors.toList()).get(1).getSalary();
     }
 
     // Display the employee(s) who gets the second minimum salary
@@ -225,8 +219,7 @@ public class Practice {
     // Display the average salary of the employees
     public static Double getAverageSalary() {
         //TODO Implement the method
-        int total = 0;
-        return employeeService.readAll().stream().map(each -> each.getSalary().doubleValue()).reduce(0.00, Double::sum)/employeeService.readAll().size();
+        return employeeService.readAll().stream().collect(Collectors.averagingDouble(Employee::getSalary));
     }
 
     // Display all the employees who are making more than average salary
